@@ -1,0 +1,80 @@
+# Rule-Based Expert System
+# Backward Chaining
+
+facts = {
+    "GoodAttendance",
+    "GoodAcademicPerformance",
+    "HasProgrammingSkill",
+    "HasCommunicationSkill"
+}
+
+rules = {
+    "EligibleForPlacement": [
+        "GoodAttendance",
+        "GoodAcademicPerformance"
+    ],
+
+    "GoodAcademicPerformance": [
+        "GoodAttendance"
+    ],
+
+    "HasProgrammingSkill": [
+        "CodingKnowledge"
+    ],
+
+    "HasCommunicationSkill": [
+        "EnglishSkill"
+    ]
+}
+
+
+def backward_chaining(goal, steps):
+
+    # If goal is already a fact
+    if goal in facts:
+        steps.append("Fact found: " + goal)
+        return True
+
+    # If no rule exists for the goal
+    if goal not in rules:
+        steps.append("No rule found for: " + goal)
+        return False
+
+    steps.append("Trying to prove: " + goal)
+
+    # Check all conditions
+    for condition in rules[goal]:
+
+        steps.append(
+            "To prove " + goal +
+            ", checking " + condition
+        )
+
+        if not backward_chaining(condition, steps):
+            return False
+
+    facts.add(goal)
+
+    steps.append("Proved: " + goal)
+
+    return True
+
+
+goal = "EligibleForPlacement"
+
+steps = []
+
+result = backward_chaining(goal, steps)
+
+print("Backward Chaining Reasoning")
+print("----------------------------")
+
+for step in steps:
+    print(step)
+
+print("\nFinal Conclusion")
+
+if result:
+    print(goal, "is TRUE")
+else:
+    print(goal, "is FALSE")
